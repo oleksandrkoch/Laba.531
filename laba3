@@ -1,0 +1,390 @@
+import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.*;
+
+public class Main {
+    static ArrayList<Student> studentInfo = new ArrayList<Student>();
+    static ArrayList<File> fileInfo = new ArrayList<File>();
+    static Scanner scanner = new Scanner(System.in);
+    static String studentFileName = "Student.txt";
+    static String fileFileName = "File.txt";
+
+    public static class Student {
+        public String name, surname;
+        public int number;
+        public int[] rating = new int[5];
+
+        Student() {
+
+        }
+    }
+
+    public static class File {
+        String name, exp;
+        int size;
+        Date date;
+
+        File() {
+
+        }
+    }
+
+    public static void main(String[] args) {
+        int index;
+        LoadFromFile();
+        do {
+            System.out.print("1.Студент.\n2.Файли.\n3.Выхід.\nВведіть номер завдання:");
+            index = scanner.nextByte();
+            switch (index) {
+                case 1: {
+                    do {
+                        System.out.print("1.Добавити студента.\n2.Статистика.\n3.Назад в меню.\nВведіть номер завдання:");
+                        index = scanner.nextByte();
+                        switch (index) {
+                            case 1:
+                                AddStudent();
+                                break;
+                            case 2:
+                                ShowStudent();
+                                ;
+                                break;
+                        }
+                    }
+                    while (index != 3);
+                    index = 0;
+                }
+                break;
+                case 2: {
+                    do {
+                        System.out.print("1.Показати дані.\n2.Добавити.\n3.Редагувати.\n4.Пошук\n5.Видалення\n6.Назад в меню.\nВведіть номер завдання:");
+                        index = scanner.nextByte();
+                        switch (index) {
+                            case 1:
+                                ShowFile();
+                                ;
+                                break;
+
+                            case 2:
+                                AddFile();
+                                ;
+                                break;
+                            case 3:
+                                EditFile();
+                                ;
+                                break;
+                            case 4:
+                                SearchFile();
+                                ;
+                                break;
+                            case 5:
+                                RemoveFIle();
+                                ;
+                                break;
+
+                        }
+
+                    }
+                    while (index != 6);
+                    index = 0;
+                }
+
+                break;
+
+            }
+
+        } while (index != 3);
+    }
+    public static void SearchFile()
+    {
+        byte day;
+        byte month;
+        do {
+            System.out.print("Введіть номер місяця: ");
+            month = scanner.nextByte();
+        } while (month > 12 || month < 1);
+        Calendar calendar = new GregorianCalendar(LocalDate.now().getYear(), month - 1, 1);
+        do {
+            System.out.println("Максимум днів:" + calendar.getActualMaximum(calendar.DAY_OF_MONTH));
+            System.out.print("Введіть день: ");
+            day = scanner.nextByte();
+
+        } while (day > calendar.getActualMaximum(calendar.DAY_OF_MONTH) || day < 1);
+        calendar = new GregorianCalendar(LocalDate.now().getYear(), month - 1, day);
+        Boolean flag = false;
+        for(File tmp : fileInfo)
+        {
+            if(tmp.date.equals(calendar.getTime()))
+            {
+                System.out.println(("Назва:" + tmp.name + " | Розширення: " + tmp.exp + " | Розмір : " + tmp.size + " | Дата : " + tmp.date));
+                flag = true;
+            }
+        }
+        if(!flag) System.out.println("Немає");
+    }
+    public static void AddStudent() {
+        try {
+            FileOutputStream fos = new FileOutputStream(studentFileName, true);
+            DataOutputStream dos = new DataOutputStream(fos);
+            Student temp = new Student();
+            System.out.println("Введіть ім'я студента");
+            temp.name = scanner.nextLine();
+            temp.name = scanner.nextLine();
+            System.out.println("Введіть прізвище студента");
+            temp.surname = scanner.nextLine();
+            System.out.println("№ заліковки");
+            temp.number = scanner.nextByte();
+            for (int i = 0; i < 5; i++) {
+                do {
+                    System.out.println("Оцінка за предмет №" + (i + 1) + "(1-100):");
+                    temp.rating[i] = scanner.nextByte();
+                } while (temp.rating[i] > 100 || temp.rating[i] < 1);
+            }
+            studentInfo.add(temp);
+            dos.writeUTF(temp.name);
+            dos.writeUTF(temp.surname);
+
+            dos.write(temp.number);
+            for (int i = 0; i < 5; i++) {
+                dos.write(temp.rating[i]);
+            }
+        } catch (IOException e) {
+            System.out.println("Error");
+        }
+    }
+
+    public static void LoadFromFile() {
+        try {
+            FileInputStream fis = new FileInputStream(studentFileName);
+            DataInputStream dis = new DataInputStream(fis);
+            Student temp;
+            while (dis.available() > 0) {
+                temp = new Student();
+                temp.name = dis.readUTF();
+                temp.surname = dis.readUTF();
+                temp.number = dis.read();
+                for (int i = 0; i < 5; i++) {
+                    temp.rating[i] = dis.read();
+                }
+                studentInfo.add(temp);
+            }
+            dis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            FileInputStream fis = new FileInputStream(fileFileName);
+            DataInputStream dis = new DataInputStream(fis);
+            File temp;
+            while (dis.available() > 0) {
+                temp = new File();
+                temp.name = dis.readUTF();
+                temp.exp = dis.readUTF();
+                temp.size = dis.read();
+                String dateString = dis.readUTF();
+                try {
+                    temp.date = new SimpleDateFormat("dd/MM/y").parse(dateString);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                fileInfo.add(temp);
+            }
+            SortFile();
+            dis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void ShowStudent() {
+        for (int i = 0; i < studentInfo.size() - 1; i++) {
+            for (int j = 0; j < studentInfo.size() - i - 1; j++) {
+                if ((studentInfo.get(j).rating[0] + studentInfo.get(j).rating[1] + studentInfo.get(j).rating[2] + studentInfo.get(j).rating[3] + studentInfo.get(j).rating[4]) / 5
+                        > (studentInfo.get(j + 1).rating[0] + studentInfo.get(j + 1).rating[1] + studentInfo.get(j + 1).rating[2] + studentInfo.get(j + 1).rating[3] + studentInfo.get(j + 1).rating[4]) / 5) {
+                    Student tmp = studentInfo.get(j + 1);
+                    studentInfo.set(j + 1, studentInfo.get(j));
+                    studentInfo.set(j, tmp);
+                }
+            }
+        }
+        int amount = 0;
+        for (Student tmp : studentInfo) {
+            float rate = (tmp.rating[0] + tmp.rating[1] + tmp.rating[2] + tmp.rating[3] + tmp.rating[4]) / 5;
+            if (rate < 50) amount++;
+            System.out.println("Ім'я:" + tmp.name + "\tПрізвище:" + tmp.surname + "\t№ заліковки:" + tmp.number + "\tСередній бал:" + rate);
+        }
+        System.out.println("Відсоток студентів з негативним серед. балом = " + String.format("%.2f", (float) amount / studentInfo.size() * 100) + "%");
+    }
+
+    public static void AddFile() {
+        try {
+            FileOutputStream fos = new FileOutputStream(fileFileName, true);
+            DataOutputStream dos = new DataOutputStream(fos);
+            File temp = new File();
+            System.out.println("Введіть назву файла:");
+            temp.name = scanner.nextLine();
+            temp.name = scanner.nextLine();
+            System.out.println("Введіть розширення:");
+            temp.exp = scanner.nextLine();
+            System.out.println("Розмір:");
+            temp.size = scanner.nextByte();
+            byte day;
+            byte month;
+            do {
+                System.out.print("Введіть номер місяця: ");
+                month = scanner.nextByte();
+            } while (month > 12 || month < 1);
+            Calendar calendar = new GregorianCalendar(LocalDate.now().getYear(), month - 1, 1);
+            do {
+                System.out.println("Максимум днів:" + calendar.getActualMaximum(calendar.DAY_OF_MONTH));
+                System.out.print("Введіть день: ");
+                day = scanner.nextByte();
+
+            } while (day > calendar.getActualMaximum(calendar.DAY_OF_MONTH) || day < 1);
+            calendar = new GregorianCalendar(LocalDate.now().getYear(), month - 1, day);
+            temp.date = calendar.getTime();
+
+            fileInfo.add(temp);
+            dos.writeUTF(temp.name);
+            dos.writeUTF(temp.exp);
+            dos.write(temp.size);
+            dos.writeUTF(new SimpleDateFormat("dd/MM/y", Locale.ENGLISH).format(temp.date));
+
+        } catch (IOException e) {
+            System.out.println("Error");
+        }
+        SortFile();
+    }
+
+    public static void ShowFile() {
+        for (int i = 0; i < fileInfo.size(); i++) {
+            System.out.println((i + 1) + ": Назва:" + fileInfo.get(i).name + " | Розширення: " + fileInfo.get(i).exp + " | Розмір : " + fileInfo.get(i).size + " | Дата : " + fileInfo.get(i).date);
+        }
+
+    }
+
+    public static void EditFile() {
+        ShowFile();
+        byte index, lineIndex;
+        do {
+            System.out.println("1-" + fileInfo.size());
+            System.out.print("Введіть індекс(" + "Від 1 до " + fileInfo.size() + "):");
+            index = scanner.nextByte();
+        } while (index < 1 || index > fileInfo.size());
+        File tmp = new File();
+        tmp = fileInfo.get(index - 1);
+
+        do {
+            do {
+                System.out.print("Виберіть параментр для редагування\n(1.Назва | 2.Розширення | 3.Розмір | 4.Дата)\n(5.Повернення в меню)\nВведіть індекс:");
+                lineIndex = scanner.nextByte();
+            } while (lineIndex < 1 || lineIndex > 5);
+
+            switch (lineIndex) {
+                case 1: {
+                    System.out.print("Введіть назву: ");
+                    tmp.name = scanner.nextLine();
+                    tmp.name = scanner.nextLine();
+                }
+                ;
+                break;
+                case 2: {
+                    System.out.print("Введіть розширення: ");
+                    tmp.exp = scanner.nextLine();
+                    tmp.exp = scanner.nextLine();
+                    ;
+                    break;
+                }
+                case 3: {
+                    System.out.print("Введіть розмір: ");
+                    tmp.exp = scanner.nextLine();
+                }
+                ;
+                break;
+                case 4: {
+                    byte day;
+                    byte month;
+                    do {
+                        System.out.print("Введіть номер місяця: ");
+                        month = scanner.nextByte();
+                    } while (month > 12 || month < 1);
+                    Calendar calendar = new GregorianCalendar(LocalDate.now().getYear(), month - 1, 1);
+                    do {
+                        System.out.println("Максиму днів:" + calendar.getActualMaximum(calendar.DAY_OF_MONTH));
+                        System.out.print("Введіть день: ");
+                        day = scanner.nextByte();
+
+                    } while (day > calendar.getActualMaximum(calendar.DAY_OF_MONTH) || day < 1);
+                    calendar = new GregorianCalendar(LocalDate.now().getYear(), month - 1, day);
+                    tmp.date = calendar.getTime();
+                }
+                ;
+                break;
+
+            }
+        }
+        while (lineIndex != 5);
+        fileInfo.set(index - 1, tmp);
+        try {
+            FileOutputStream fos = new FileOutputStream(fileFileName);
+            DataOutputStream dos = new DataOutputStream(fos);
+            for (File temp : fileInfo) {
+                dos.writeUTF(temp.name);
+                dos.writeUTF(temp.exp);
+                dos.write(temp.size);
+                dos.writeUTF(new SimpleDateFormat("dd/MM/y", Locale.ENGLISH).format(temp.date));
+
+            }
+            dos.close();
+            fos.close();
+
+        } catch (IOException e) {
+            System.out.println("Error");
+        }
+        SortFile();
+    }
+
+    public static void SortFile() {
+        if (!fileInfo.isEmpty()) {
+            for (int i = 0; i < fileInfo.size() - 1; i++) {
+                for (int j = 0; j < fileInfo.size() - i - 1; j++) {
+                    if (fileInfo.get(j).exp.charAt(0) > fileInfo.get(j + 1).exp.charAt(0)) {
+                        File temp = fileInfo.get(j);
+                        fileInfo.set(j, fileInfo.get(j + 1));
+                        fileInfo.set(j + 1, temp);
+                    }
+                }
+            }
+        }
+    }
+
+    static void RemoveFIle() {
+        ShowFile();
+        byte index;
+        do {
+            System.out.println("1-" + fileInfo.size());
+            System.out.print("Введіть(" + "від 1 до " + fileInfo.size() + ") індекс для вилучення:");
+            index = scanner.nextByte();
+        } while (index < 1 || index > fileInfo.size());
+        fileInfo.remove(index - 1);
+        System.out.println("-----Data removed-----");
+        try {
+            FileOutputStream fos = new FileOutputStream(fileFileName);
+            DataOutputStream dos = new DataOutputStream(fos);
+            for (File temp : fileInfo) {
+                dos.writeUTF(temp.name);
+                dos.writeUTF(temp.exp);
+                dos.write(temp.size);
+                dos.writeUTF(new SimpleDateFormat("dd/MM/y", Locale.ENGLISH).format(temp.date));
+
+            }
+            dos.close();
+            fos.close();
+
+        } catch (IOException e) {
+            System.out.println("Error");
+        }
+    }
+
+}

@@ -1,0 +1,423 @@
+import java.util.Scanner;
+
+public class Program {
+
+    static Scanner in = new Scanner(System.in);
+
+    public static void main(String[] args)
+    {
+        menu();
+    }
+
+    static void menu()
+    {
+        boolean flag = false;
+        while(!flag) {
+            String a;
+            System.out.println("Завдання:");
+            System.out.println("1");
+            System.out.println("2.1");
+            System.out.println("2.2");
+            System.out.println("3.A1");
+            System.out.println("3.A2");
+            System.out.println("3.B1");
+            System.out.println("3.B2");
+            System.out.println("4.A");
+            System.out.println("4.B");
+            System.out.print("Введіть завдання: ");
+            a = in.next();
+            switch (a) {
+                case "1":
+                    zavd1(); flag = true;
+                    break;
+                case "2.1":
+                    zavd2_1(); flag = true;
+                    break;
+                case "2.2":
+                    zavd2_2(); flag = true;
+                    break;
+                case "3.A1":
+                    zavd3_A1(); flag = true;
+                    break;
+                case "3.A2":
+                    zavd3_A2(); flag = true;
+                    break;
+                case "3.B1":
+                    zavd3_B1(); flag = true;
+                    break;
+                case "3.B2":
+                    zavd3_B2(); flag = true;
+                    break;
+                case "4.A":
+                    zavd4_A(); flag = true;
+                    break;
+                case "4.B":
+                    zavd4_B(); flag = true;
+                    break;
+                default:
+                    System.out.println("Немає такого завдання");
+                    break;
+            }
+        }
+    }
+
+    static void zavd4_B()
+    {
+        System.out.println("Завдання 4(B)");
+        int temp;
+        int[][] matr;
+        byte n = 0, m = 0;
+        byte k ;
+        byte p ;
+        while(n<=0)
+        {
+            System.out.print("Введіть кількість рядочків матриці(1 - 127): ");
+            while (!in.hasNextByte()) {
+                System.out.print("Введіть кількість рядочків матриці(1 - 127): ");
+                in.next();
+            }
+            n = in.nextByte();
+        }
+        while(m<=0)
+        {
+            System.out.print("Введіть кількість стовпців матриці(1 - 127): ");
+            while (!in.hasNextByte()) {
+                System.out.print("Введіть кількість стовпців матриці(1 - 127): ");
+                in.next();
+            }
+            m = in.nextByte();
+        }
+        matr = new int[n][m];
+        System.out.println("Заповнена рандомно матриця:");
+
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < m; j++)
+            {
+                matr[i][j] = (int) ((Math.random()*(200+1)) - 100);
+                System.out.print(matr[i][j] + "\t");
+
+            }
+            System.out.println();
+        }
+        System.out.println("Введіть який рядок поміняти:");
+        k = in.nextByte();
+        System.out.println("Введіть з яким рядком поміняти:");
+        p = in.nextByte();
+        System.out.println("Змінена матриця: ");
+        for (int i = 0; i < matr.length; i++) {
+            temp = matr[i][k - 1];
+            matr[i][k - 1] = matr[i][p - 1];
+            matr[i][p - 1] = temp;
+        }
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < m; j++)
+            {
+                System.out.print(matr[i][j] + "\t");
+
+            }
+            System.out.println();
+        }
+
+    }
+
+    static void zavd4_A()
+    {
+        System.out.println("Завдання 4(A)");
+        int temp;
+        int[][] matr;
+        byte n = 0, m = 0;
+        byte k ;
+        byte p ;
+        while(n<=0)
+        {
+            System.out.print("Введіть кількість рядочків матриці(1 - 127): ");
+            while (!in.hasNextByte()) {
+                System.out.print("Введіть кількість рядочків матриці(1 - 127): ");
+                in.next();
+            }
+            n = in.nextByte();
+        }
+        while(m<=0)
+        {
+            System.out.print("Введіть кількість стовпців матриці(1 - 127): ");
+            while (!in.hasNextByte()) {
+                System.out.print("Введіть кількість стовпців матриці(1 - 127): ");
+                in.next();
+            }
+            m = in.nextByte();
+        }
+        matr = new int[n][m];
+        System.out.println("Заповніть матрицю:");
+
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < m; j++)
+            {
+                System.out.print("Введіть [" + (i+1) + "][" + (j+1) + "]елемент матриці: ");
+                while(!in.hasNextInt())
+                {
+                    System.out.print("Введіть [" + (i+1) + "][" + (j+1) + "] елемент матриці: ");
+                    in.next();
+                }
+                matr[i][j] = in.nextInt();
+            }
+        }
+
+        System.out.println("Введена матриця: ");
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < m; j++)
+            {
+                System.out.print(matr[i][j] + "\t");
+
+            }
+            System.out.println();
+        }
+        System.out.println("Введіть який рядок поміняти:");
+        k = in.nextByte();
+        System.out.println("Введіть з яким рядком поміняти:");
+        p = in.nextByte();
+        System.out.println("Змінена матриця: ");
+        for (int i = 0; i < matr.length; i++) {
+            temp = matr[i][k - 1];
+            matr[i][k - 1] = matr[i][p - 1];
+            matr[i][p - 1] = temp;
+        }
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < m; j++)
+            {
+                System.out.print(matr[i][j] + "\t");
+
+            }
+            System.out.println();
+        }
+    }
+
+    static void zavd3_B1()
+    {
+        System.out.println("Завдання 3.1(В)");
+        byte n = 0; int suma = 0;
+        while(n<=0)
+        {
+            System.out.print("Введіть розмірність масиву(1 - 127): ");
+            n = in.nextByte();
+        }
+        int[] array = new int[n];
+        System.out.println("Рандомно заповнений масив:");
+        for(int i = 0; i < n;i++)
+        {
+            array[i] = (int) ((Math.random()*(200+1)) - 100);
+            System.out.print(array[i] + "\t");
+            if(array[i] < 0) suma+=Math.abs(array[i]);
+        }
+        System.out.println("\nСума модулів від'ємних елементів масиву = " + suma);
+    }
+
+    static void zavd3_B2()
+    {
+        System.out.println("Завдання 3.2(В)");
+        byte n = 0;
+        int dob = 1;
+        byte index = 0;
+        while(n<=0 || n>6) {
+            System.out.print("Введіть розмірність масиву(1 - 6): ");
+            n = in.nextByte();
+        }
+        int[] array = new int[n];
+        System.out.println("Рандомно заповнений масив:");
+        for(byte i = 0; i < n;i++) {
+            array[i] = (int) ((Math.random()*(200+1)) - 100);
+            System.out.print(array[i] + "\t");
+            if(array[i]<0) {index = i;}
+        }
+        for(int i=0; i<index;i++)
+        {
+            dob *= array[i];
+        }
+        System.out.print("\nДобуток  елементів  масиву, розташованих до останнього від’ємного елемента = " + dob);
+    }
+
+    static void zavd3_A2()
+    {
+        System.out.println("Завдання 3.2(А)");
+        byte n = 0;
+        int dob = 1;
+        byte index = 0;
+        while(n <= 0)
+        {
+            System.out.print("Введіть розмірність масиву(1 - 127): ");
+            n = in.nextByte();
+        }
+        int[] array = new int[n];
+        for(byte i = 0; i < n;i++) {
+            System.out.print("Введіть " + (i + 1) + " елемент масиву:  ");
+            array[i] = in.nextInt();
+            if(array[i] < 0) {index = i;}
+        }
+        for(int i=0; i<index;i++)
+        {
+            dob *= array[i];
+        }
+        System.out.print("Добуток  елементів  масиву, розташованих до останнього від’ємного елемента = " + dob);
+    }
+
+    static void zavd3_A1()
+    {
+        System.out.println("Завдання 3.1(А)");
+        byte n = 0, suma = 0;
+        while(n<=0) {
+            System.out.print("Введіть розмірність масиву(1 - 127): ");
+            n = in.nextByte();
+        }
+        int[] array = new int[n];
+        for(int i = 0; i < n;i++)
+        {
+            System.out.print("Введіть "+ (i+1) +" елемент масиву:  ");
+            array[i] = in.nextByte();
+            if(array[i] < 0) suma+=Math.abs(array[i]);
+        }
+        System.out.println("Сума модулів від'ємних елементів масиву = " + suma);
+    }
+
+    static void zavd2_1()//while_do
+    {
+        System.out.println("Завдання 2(1)");
+        float a = -3.14f/2,dx = 3.14f/30, b = 3.14f/2;
+        System.out.println("x\t\t|\ty=sin(x)/x");
+        while (a<b)
+        {
+
+            System.out.printf("%.3f\t|\t%.3f\n", a, Math.sin(a)/a);
+            a+=dx;
+        }
+    }
+    static void zavd2_2()
+    {
+        System.out.println("Завдання 2(2)");
+        float a = -3.14f/2,dx = 3.14f/30, b = 3.14f/2;
+        System.out.println("x\t\t|\ty=sin(x)/x");
+        do
+        {
+
+            System.out.printf("%.3f\t|\t%.3f\n", a, Math.sin(a)/a);
+            a+=dx;
+        }
+        while (a<b);
+    }
+
+    static void zavd1()
+    {
+        int n;
+        boolean check = false ;
+        System.out.println("Завдання 1.\nВведіть годину числом 1..24");
+        n = in.nextInt();
+        while(!check) {
+            switch (n) {
+                case 1 -> {
+                    System.out.println("Перша година\n");
+                    check = true;
+                }
+                case 2 -> {
+                    System.out.println("Друга година\n");
+                    check = true;
+                }
+                case 3 -> {
+                    System.out.println("Третя година\n");
+                    check = true;
+                }
+                case 4 -> {
+                    System.out.println("Четверта година\n");
+                    check = true;
+                }
+                case 5 -> {
+                    System.out.println("П'ята година\n");
+                    check = true;
+                }
+                case 6 -> {
+                    System.out.println("Шоста година\n");
+                    check = true;
+                }
+                case 7 -> {
+                    System.out.println("Сьома година\n");
+                    check = true;
+                }
+                case 8 -> {
+                    System.out.println("Восьма година \n");
+                    check = true;
+                }
+                case 9 -> {
+                    System.out.println("Дев'ята година\n");
+                    check = true;
+                }
+                case 10 -> {
+                    System.out.println("Десята година\n");
+                    check = true;
+                }
+                case 11 -> {
+                    System.out.println("Одинадцята година\n");
+                    check = true;
+                }
+                case 12 -> {
+                    System.out.println("Дванадцята година\n");
+                    check = true;
+                }
+                case 13 -> {
+                    System.out.println("Тринадцята година\n");
+                    check = true;
+                }
+                case 14 -> {
+                    System.out.println("Чотирнадцята година\n");
+                    check = true;
+                }
+                case 15 -> {
+                    System.out.println("П'ятнадцята година\n");
+                    check = true;
+                }
+                case 16 -> {
+                    System.out.println("Шістнадцята година\n");
+                    check = true;
+                }
+                case 17 -> {
+                    System.out.println("Сімнадцята година\n");
+                    check = true;
+                }
+                case 18 -> {
+                    System.out.println("Вісімнадцята година\n");
+                    check = true;
+                }
+                case 19 -> {
+                    System.out.println("Девятнадцята година\n");
+                    check = true;
+                }
+                case 20 -> {
+                    System.out.println("Двадцята година\n");
+                    check = true;
+                }
+                case 21 -> {
+                    System.out.println("Двадцять перша година\n");
+                    check = true;
+                }
+                case 22 -> {
+                    System.out.println("Двадцять друга година\n");
+                    check = true;
+                }
+                case 23 -> {
+                    System.out.println("Двадцять третя година\n");
+                    check = true;
+                }
+                case 24 -> {
+                    System.out.println("Двадцять четверта година\n");
+                    check = true;
+                }
+
+                default -> {
+                    System.out.println("Вихід за межі діапазону. Введіть годину числом 1..24:");
+                    n = in.nextInt();
+                }
+            }
+        }
+    }
+}
